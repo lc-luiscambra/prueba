@@ -7,23 +7,7 @@
  * See https://creativecommons.org/publicdomain/zero/1.0/ for terms.
  */
  
-/* random string of characters; must match the "Secret" defined in your GitHub webhook*/
-define('GITHUB_SECRET', 'LCdeploy');
-/* name of the git branch that you're deploying*/
-define('GITHUB_BRANCH', 'master');
-/* your email address, where you'll receive notices of deploy successes/failures*/
-define('EMAIL_RECIPIENT', 'david@luiscambra.com');
-/*/* domain of your website*/
-define('SITE_DOMAIN', 'luiscambra.com');
-/* port number of SSH for your server (may vary by hosting provider -- for me, it was 21098)*/
-define('SSH_PORT', 50050);
-/*/* username for SSH (should be the same as your cPanel login username)*/
-define('SSH_USERNAME', 'root');
-/* filename for the keypair to use -- no need to change this if you follow the readme instructions*/
-define('KEYPAIR_NAME', 'deploy');
-/* the passphrase for your keypair*/
-define('KEYPAIR_PASSPHRASE', 'luiscambra');
-/* END OF CONFIGURATION OPTIONS*/
+include ('config.php');
 /**
  * Convenience function for sending emails
  *
@@ -71,7 +55,7 @@ try {
     $sigAlgo = $sigParts[0];
     $sigHash = $sigParts[1];
     /* verify that the signature is correct*/
-    $hash = hash_hmac($sigAlgo, $payload, GITHUB_SECRET);
+    $hash = hash_hmac($sigAlgo, $payload, __GITHUB_SECRET__);
     
     if ($hash === false) {
         throw new Exception("Unknown signature algo: $sigAlgo");
@@ -89,21 +73,30 @@ try {
     /* make sure it's the right branch*/
     $branchRef = $data->ref;
     
-    if ($branchRef != 'refs/heads/'.GITHUB_BRANCH) {
+    if ($branchRef != 'refs/heads/'.__GITHUB_BRANCH__) {
         die('go away4');
         die("Ignoring push to '$branchRef'");
     }
     
     /* ssh into the local server*/
-    $sshSession = ssh2_connect('185.45.73.200', SSH_PORT);
-    die("LC TEST");
+    
+    $connection = ssh2_connect(__SSH_SERVER__, __SSH_PORT__);
+
+    if (ssh2_auth_password($connection, __SSH_USER__, __SSH_PWD__)) {
+      die( "Authentication Successful!");
+    } else {
+      die('Authentication Failed...');
+    }
+    
+    /*$sshSession = ssh2_connect(__SSH_SERVER__, __SSH_PORT__);
+    
     $authSuccess = ssh2_auth_pubkey_file(
         $sshSession,
-        SSH_USERNAME,
-        '/'.SSH_USERNAME.'/.ssh/'.KEYPAIR_NAME.'.pub',
-        '/'.SSH_USERNAME.'/.ssh/'.KEYPAIR_NAME,
-        KEYPAIR_PASSPHRASE
-    );
+        __SSH_USER__,
+        '/'.__SSH_USER__.'/.ssh/'.__KEYPAIR_NAME__.'.pub',
+        '/'.__SSH_USER__.'/.ssh/'.__KEYPAIR_NAME__,
+        __KEYPAIR_PASSPHRASE__
+    );*/
     
     if (!$authSuccess) {
         die('go away3');
@@ -120,7 +113,7 @@ try {
     /* run the commands*/
     $output = '';
     $endSentinel = "!~@#_DONE_#@~!";
-    fwrite($shell, 'cd /var/www/vhosts/dns73200.phdns12.es/httpdocs/pruebagit/' . "\n");
+    fwrite($shell, 'cd '.__SSH_ROUTE__ . "\n");
     fwrite($shell, 'git pull' . "\n");
     /*fwrite($shell, 'echo ' . escapeshellarg($endSentinel) . "\n");*/
     while (true) {
