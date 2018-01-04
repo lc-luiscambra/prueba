@@ -2,21 +2,7 @@
 
 
 
-/*************************************************
-              	BLOCKSEARCH
-*************************************************/
 
-
-header .header-middle #search_block_top {
-	padding-top: 0;
-	position: relative;
-	z-index: 100;
-}
-
-header .header-middle #search_block_top .button-search {
-	background: #1B1360;
-	border: #1B1360;
-}
 
 /*************************************************
               END BLOCKSEARCH
