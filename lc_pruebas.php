@@ -30,13 +30,14 @@ $endSentinel = "!~@#_DONE_#@~!";
 fwrite($shell, 'cd '.__SSH_ROUTE__ . "\n");
 fwrite($shell, 'git pull' . "\n");
 fwrite($shell, 'echo ' . escapeshellarg($endSentinel) . "\n");
-/*die(stream_get_contents($shell));*/
+die($shell);
 while (true) {
     $o = stream_get_contents($shell);
     if ($o === false) {
         die('Failed while reading output from shell');
     }
     $output .= $o;
+    die($output);
     if (strpos($output, $endSentinel) !== false) {
         break;
     }
