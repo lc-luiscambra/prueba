@@ -41,7 +41,6 @@ try {
     $signature = $_SERVER['HTTP_X_GITHUB_EVENT'];
     if (is_null($signature) || $signature != 'push') {
         header('HTTP/1.0 400 Bad Request');
-        die('go away');
     }
     
     $payload = file_get_contents('php://input');
@@ -50,7 +49,6 @@ try {
     $sigParts  = explode('=', $signature);
     if (sizeof($sigParts) != 2) {
         throw new Exception('Bad signature: wrong number of \'=\' chars');
-        die('go away2');
     }
     $sigAlgo = $sigParts[0];
     $sigHash = $sigParts[1];
@@ -74,7 +72,6 @@ try {
     $branchRef = $data->ref;
     
     if ($branchRef != 'refs/heads/'.__GITHUB_BRANCH__) {
-        die('go away4');
         die("Ignoring push to '$branchRef'");
     }
     
@@ -90,7 +87,7 @@ try {
     
     /*die ('LC_TEST'.' - '.__SSH_SERVER__.' : '.__SSH_PORT__);*/
     $sshSession = ssh2_connect(__SSH_SERVER__, __SSH_PORT__);
-    die ('LC_TEST');
+    /*die ('LC_TEST');*/
     $authSuccess = ssh2_auth_pubkey_file(
         $sshSession,
         __SSH_USER__,
@@ -100,13 +97,11 @@ try {
     );
     
     if (!$authSuccess) {
-        die('go away3');
         throw new Exception('SSH authentication failure');
     }
     /* start a shell session*/
     $shell = ssh2_shell($sshSession, 'xterm');
     if ($shell === false) {
-        die('go away5');
         throw new Exception('Failed to open shell');
     }
     stream_set_blocking($shell, true);
@@ -120,7 +115,6 @@ try {
     while (true) {
         $o = stream_get_contents($shell);
         if ($o === false) {
-            die('go away6');
             throw new Exception('Failed while reading output from shell');
         }
         $output .= $o;
@@ -142,7 +136,6 @@ try {
     $mailSuccess = sendEmail(false, strval($e));
 }
 if(!$mailSuccess) {
-    die('go away7');
     header('HTTP/1.0 500 Internal Server Error');
     die('Failed to send email to admin!');
 }
