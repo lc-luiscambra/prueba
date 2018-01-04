@@ -5,7 +5,7 @@ define('__SSH_PWD__', 'kqQ-0J@erJmY!');
 
 define('__SSH_SERVER__', '185.45.73.200');
 
-define('__SSH_PORT__', '50050');
+define('__SSH_PORT__', 50050);
 
 define('__SSH_ROUTE__', '/var/www/vhosts/dns73200.phdns12.es/httpdocs/pruebagit/');
 
