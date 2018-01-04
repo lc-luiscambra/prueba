@@ -6,10 +6,13 @@ $connection = ssh2_connect(__SSH_SERVER__, __SSH_PORT__);
 
 $authSuccess = ssh2_auth_password($connection, __SSH_USER__, __SSH_PWD__);
 
+/*$sftp = ssh2_sftp($connection);*/
+
 if (!$authSuccess) {
     throw new Exception('SSH authentication failure');
 }
 /* start a shell session*/
+
 $shell = ssh2_shell($connection, 'xterm');
 if ($shell === false) {
     throw new Exception('Failed to open shell');
@@ -30,7 +33,7 @@ $endSentinel = "!~@#_DONE_#@~!";
 fwrite($shell, 'cd '.__SSH_ROUTE__ . "\n");
 fwrite($shell, 'git pull' . "\n");
 fwrite($shell, 'echo ' . escapeshellarg($endSentinel) . "\n");
-die($shell);
+/*die($shell);*/
 while (true) {
     $o = stream_get_contents($shell);
     if ($o === false) {

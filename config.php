@@ -7,7 +7,7 @@ define('__SSH_SERVER__', '185.45.73.200');
 
 define('__SSH_PORT__', 50050);
 
-define('__SSH_ROUTE__', '/var/www/vhosts/dns73200.phdns12.es/httpdocs/pruebagit/');
+define('__SSH_ROUTE__', '/var/www/vhosts/dns73200.phdns12.es/httpdocs/pruebagit');
 
 /* random string of characters; must match the "Secret" defined in your GitHub webhook*/
 define('__GITHUB_SECRET__', 'LCdeploy');
