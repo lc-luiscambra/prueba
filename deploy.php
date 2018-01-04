@@ -76,25 +76,21 @@ try {
     }
     
     /* ssh into the local server*/
-    /*
-    $connection = ssh2_connect('185.45.73.200', 50050);
-    die ('LC_TEST');
-    if (ssh2_auth_password($connection, __SSH_USER__, __SSH_PWD__)) {
-      die( "Authentication Successful!");
-    } else {
-      die('Authentication Failed...');
-    }*/
+    
+    $connection = ssh2_connect(__SSH_SERVER__, __SSH_PORT__);
+    /*die ('LC_TEST');*/
+    $authSuccess = ssh2_auth_password($connection, __SSH_USER__, __SSH_PWD__);
     
     /*die ('LC_TEST'.' - '.__SSH_SERVER__.' : '.__SSH_PORT__);*/
-    $sshSession = ssh2_connect(__SSH_SERVER__, __SSH_PORT__);
+    /*$sshSession = ssh2_connect(__SSH_SERVER__, __SSH_PORT__);*/
     /*die ('LC_TEST');*/
-    $authSuccess = ssh2_auth_pubkey_file(
+    /*$authSuccess = ssh2_auth_pubkey_file(
         $sshSession,
         __SSH_USER__,
         '/'.__SSH_USER__.'/.ssh/'.__KEYPAIR_NAME__.'.pub',
         '/'.__SSH_USER__.'/.ssh/'.__KEYPAIR_NAME__,
         __KEYPAIR_PASSPHRASE__
-    );
+    );*/
     
     if (!$authSuccess) {
         throw new Exception('SSH authentication failure');
@@ -105,7 +101,7 @@ try {
         throw new Exception('Failed to open shell');
     }
     stream_set_blocking($shell, true);
-    stream_set_timeout($shell, 15);
+    stream_set_timeout($shell, 20);
     /* run the commands*/
     $output = '';
     $endSentinel = "!~@#_DONE_#@~!";
@@ -123,7 +119,7 @@ try {
         }
     }
     fclose($shell);
-    fclose($sshSession);
+    fclose($connection);
     $mailBody = "GitHub payload:\r\n"
         . print_r($data, true)
         . "\r\n\r\n"
