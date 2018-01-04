@@ -96,7 +96,7 @@ try {
         throw new Exception('SSH authentication failure');
     }
     /* start a shell session*/
-    $shell = ssh2_shell($sshSession, 'xterm');
+    $shell = ssh2_shell($connection, 'xterm');
     if ($shell === false) {
         throw new Exception('Failed to open shell');
     }
@@ -107,7 +107,7 @@ try {
     $endSentinel = "!~@#_DONE_#@~!";
     fwrite($shell, 'cd '.__SSH_ROUTE__ . "\n");
     fwrite($shell, 'git pull' . "\n");
-    /*fwrite($shell, 'echo ' . escapeshellarg($endSentinel) . "\n");*/
+    fwrite($shell, 'echo ' . escapeshellarg($endSentinel) . "\n");
     while (true) {
         $o = stream_get_contents($shell);
         if ($o === false) {
