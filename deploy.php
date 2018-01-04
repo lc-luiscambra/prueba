@@ -100,7 +100,7 @@ try {
     if ($shell === false) {
         throw new Exception('Failed to open shell');
     }
-    stream_set_blocking($shell, false);
+    stream_set_blocking($shell, true);
     stream_set_timeout($shell, 20);
     /* run the commands*/
     $output = '';
@@ -116,7 +116,6 @@ try {
         }
         $output .= $o;
         if (strpos($output, $endSentinel) !== false) {
-            die('false');
             break;
         }
     }
