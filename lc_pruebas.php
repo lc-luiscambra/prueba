@@ -75,9 +75,8 @@ try {
     fwrite($shell, 'echo ' . escapeshellarg($endSentinel) . "\n");
     /*die($shell);*/
     /*die(stream_get_contents($shell));*/
-    while (true) {
+    /*while (true) {
         $o = stream_get_contents($shell);
-        die($o);
         if ($o === false) {
             die('Failed while reading output from shell');
         }
@@ -85,7 +84,7 @@ try {
         if (strpos($output, $endSentinel) !== false) {
             break;
         }
-    }
+    }*/
     fclose($shell);
     fclose($connection);
     $mailBody = "GitHub payload:\r\n"
