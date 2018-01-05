@@ -77,20 +77,20 @@ try {
     
     /* ssh into the local server*/
     
-    /*$connection = ssh2_connect(__SSH_SERVER__, __SSH_PORT__);
+    $connection = ssh2_connect(__SSH_SERVER__, __SSH_PORT__);
     /*die ('LC_TEST');*/
-    /*$authSuccess = ssh2_auth_password($connection, __SSH_USER__, __SSH_PWD__);*/
+    $authSuccess = ssh2_auth_password($connection, __SSH_USER__, __SSH_PWD__);
     
     /*die ('LC_TEST'.' - '.__SSH_SERVER__.' : '.__SSH_PORT__);*/
-    $sshSession = ssh2_connect(__SSH_SERVER__, __SSH_PORT__);
+    /*$sshSession = ssh2_connect(__SSH_SERVER__, __SSH_PORT__);*/
     /*die ('LC_TEST');*/
-    $authSuccess = ssh2_auth_pubkey_file(
+    /*$authSuccess = ssh2_auth_pubkey_file(
         $sshSession,
         __SSH_USER__,
         '/'.__SSH_USER__.'/.ssh/'.__KEYPAIR_NAME__.'.pub',
         '/'.__SSH_USER__.'/.ssh/'.__KEYPAIR_NAME__,
         __KEYPAIR_PASSPHRASE__
-    );
+    );*/
     
     if (!$authSuccess) {
         throw new Exception('SSH authentication failure');
@@ -100,17 +100,39 @@ try {
     if ($shell === false) {
         die('Failed to open shell');
     }
-    stream_set_blocking($shell, true);
-    stream_set_timeout($shell, 20);
+    /*stream_set_blocking($shell, true);
+    stream_set_timeout($shell, 20);*/
     /* run the commands*/
-    $output = '';
+    
+    $move_command = 'cd '.__SSH_ROUTE__ . "\n";
+    $git_command = 'git pull' . "\n";
+    
+    $commands = array($move_command, $git_command);
+    
+    foreach($commands as $command){
+        /* Send the command */
+        $stream = ssh2_exec(self::$connection, $command);
+        $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+        
+        /* Enable Blocking */ 
+        stream_set_blocking($errorStream, true);
+        stream_set_blocking($stream, true);
+        
+        /* Grab Response */ 
+        $response .= stream_get_contents($stream);
+        if($reponse === false){
+            die('Failed while reading output from shell');
+        }
+      }
+    
+    /*$output = '';
     $endSentinel = "!~@#_DONE_#@~!";
     fwrite($shell, 'cd '.__SSH_ROUTE__ . "\n");
     fwrite($shell, 'git pull' . "\n");
-    fwrite($shell, 'echo ' . escapeshellarg($endSentinel) . "\n");
+    fwrite($shell, 'echo ' . escapeshellarg($endSentinel) . "\n");*/
     /*die($shell);*/
     /*die(stream_get_contents($shell));*/
-    while (true) {
+    /*while (true) {
         $o = stream_get_contents($shell);
         if ($o === false) {
             die('Failed while reading output from shell');
@@ -119,7 +141,7 @@ try {
         if (strpos($output, $endSentinel) !== false) {
             break;
         }
-    }
+    }*/
     fclose($shell);
     fclose($connection);
     $mailBody = "GitHub payload:\r\n"
