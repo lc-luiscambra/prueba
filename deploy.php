@@ -111,7 +111,7 @@ try {
     
     foreach($commands as $command){
         /* Send the command */
-        $stream = ssh2_exec(self::$connection, $command);
+        $stream = ssh2_exec($connection, $command);
         $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
         
         /* Enable Blocking */ 
@@ -142,8 +142,10 @@ try {
             break;
         }
     }*/
+    
     fclose($shell);
     fclose($connection);
+    
     $mailBody = "GitHub payload:\r\n"
         . print_r($data, true)
         . "\r\n\r\n"
