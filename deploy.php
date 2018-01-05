@@ -100,40 +100,20 @@ try {
     if ($shell === false) {
         die('Failed to open shell');
     }
-    /*stream_set_blocking($shell, true);
-    stream_set_timeout($shell, 20);*/
+    stream_set_blocking($shell, true);
+    stream_set_timeout($shell, 20);
     /* run the commands*/
-    
-    $move_command = 'cd '.__SSH_ROUTE__ . "\n";
-    $git_command = 'git pull' . "\n";
-    
-    $commands = array($move_command, $git_command);
-    
-    foreach($commands as $command){
-        /* Send the command */
-        $stream = ssh2_exec($connection, $command);
-        $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
-        
-        /* Enable Blocking */ 
-        stream_set_blocking($errorStream, true);
-        stream_set_blocking($stream, true);
-        
-        /* Grab Response */ 
-        $response .= stream_get_contents($stream);
-        if($reponse === false){
-            die('Failed while reading output from shell');
-        }
-      }
-    
-    /*$output = '';
+
+    $output = '';
     $endSentinel = "!~@#_DONE_#@~!";
     fwrite($shell, 'cd '.__SSH_ROUTE__ . "\n");
     fwrite($shell, 'git pull' . "\n");
-    fwrite($shell, 'echo ' . escapeshellarg($endSentinel) . "\n");*/
+    fwrite($shell, 'echo ' . escapeshellarg($endSentinel) . "\n");
     /*die($shell);*/
     /*die(stream_get_contents($shell));*/
-    /*while (true) {
+    while (true) {
         $o = stream_get_contents($shell);
+        die($o);
         if ($o === false) {
             die('Failed while reading output from shell');
         }
@@ -141,7 +121,7 @@ try {
         if (strpos($output, $endSentinel) !== false) {
             break;
         }
-    }*/
+    }
     
     fclose($shell);
     fclose($connection);

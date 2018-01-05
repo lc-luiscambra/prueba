@@ -1,4 +1,5 @@
 <?php
+
 /**
  * deploy.php by Hayden Schiff (oxguy3)
  * Available at https://gist.github.com/oxguy3/70ea582d951d4b0f78edec282a2bebf9
@@ -76,6 +77,7 @@ try {
     /*die(stream_get_contents($shell));*/
     while (true) {
         $o = stream_get_contents($shell);
+        die($o);
         if ($o === false) {
             die('Failed while reading output from shell');
         }
